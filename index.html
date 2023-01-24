@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Document</title>
+  </head>
+  <body>
+    <div id="app" class="">
+      <div
+        id="characters"
+        class="flex items-center justify-around gap-36 mt-12"
+      >
+        <div id="character" class="flex items-center flex-col gap-4 w-full">
+          <h1 id="character-name" class="font-bold">FIGHTER</h1>
+          <div
+            id="health-bar"
+            :style="{width: canMe + '%'}"
+            class="bg-green-300 p-4 text-center transition duration-1500 ease-out"
+          >
+            {{canMe + '%'}}
+          </div>
+        </div>
+        <div id="character" class="flex items-center flex-col gap-4 w-full">
+          <h1 id="character-name" class="font-bold">BOSS</h1>
+          <div
+            id="health-bar"
+            :style="{width: canBoss + '%'}"
+            class="bg-red-300 p-4 text-center transition duration-1500 ease-out"
+          >
+            {{canBoss + '%'}}
+          </div>
+        </div>
+      </div>
+
+      <div
+        id="buttons"
+        class="border-2 rounded border-gray-400 mt-8 p-5 flex items-center justify-center text-center text-white gap-8"
+      >
+        <button
+          @click="yeniOyun"
+          class="bg-pink-400 p-2 rounded"
+          v-if="!gameStart"
+        >
+          Yeni Oyun
+        </button>
+        <button
+          @click="saldir"
+          v-if="gameStart"
+          class="bg-blue-400 p-2 rounded"
+        >
+          Saldır
+        </button>
+        <button
+          @click="ozelSaldiri"
+          v-if="gameStart"
+          class="bg-orange-400 p-2 rounded"
+        >
+          Özel Saldırı
+        </button>
+        <button
+          @click="canVer"
+          v-if="gameStart "
+          class="bg-purple-400 p-2 rounded"
+        >
+          Can Ver
+        </button>
+        <button
+          @click="oyunBitir"
+          v-if="gameStart"
+          class="bg-yellow-400 p-2 rounded"
+        >
+          Oyunu Bitir
+        </button>
+      </div>
+      <div
+        id="msg-box"
+        class="border-2 rounded border-gray-400 mt-8 p-5 flex items-center justify-center text-center font-semibold"
+      >
+        {{msg}}
+      </div>
+    </div>
+
+    <script>
+      new Vue({
+        el: "#app",
+        data: {
+          gameStart: false,
+          canMe: 100,
+          canBoss: 100,
+          msg: "",
+        },
+        methods: {
+          ozelSaldiri: function () {
+            let pointBoss = Math.floor(Math.random() * (20 - 10 + 1)) + 10;
+            this.canBoss -= pointBoss;
+
+            let pointFighter = Math.floor(Math.random() * (20 - 10 + 1)) + 10;
+            this.canMe -= pointFighter;
+
+            return (this.msg = `Fighter'a verilen özel hasar: ${pointFighter} \n Boss'a verilen özel hasar: ${pointBoss}`);
+          },
+          canVer: function () {
+            let pointBoss = Math.floor(Math.random() * 11);
+            this.canBoss += pointBoss;
+
+            let pointFighter = Math.floor(Math.random() * 11);
+            this.canMe += pointFighter;
+
+            return (this.msg = `Fighter'a verilen can: ${pointFighter} \n Boss'a verilen can: ${pointBoss}`);
+          },
+          oyunBitir: function () {
+            this.gameStart = false;
+            this.msg = "Oyun Bitti";
+          },
+          yeniOyun: function () {
+            this.gameStart = true;
+            this.msg = "Oyun Başladı";
+            this.canMe = 100;
+            this.canBoss = 100;
+          },
+          saldir: function () {
+            let pointBoss = Math.floor(Math.random() * 11);
+            this.canBoss -= pointBoss;
+
+            let pointFighter = Math.floor(Math.random() * 11);
+            this.canMe -= pointFighter;
+
+            return (this.msg = `Fighter'a verilen hasar: ${pointFighter} \n Boss'a verilen hasar: ${pointBoss}`);
+          },
+        },
+        watch: {
+          canMe: function (value) {
+            if (value <= 0) {
+              this.oyunBitir();
+              this.canMe = 0;
+            } else if (value >= 100) {
+              this.canMe = 100;
+            }
+          },
+          canBoss: function (value) {
+            if (value <= 0) {
+              this.oyunBitir();
+              this.canBoss = 0;
+            } else if (value >= 100) {
+              this.canBoss = 100;
+            }
+          },
+        },
+      });
+    </script>
+  </body>
+</html>
